@@ -23,36 +23,34 @@
       <form id="anuncioForm" class="p-4 rounded shadow bg-white" style="max-width:420px; width:100%;">
         <div class="mb-3">
           <label class="form-label">Nome:</label>
-          <input type="text" name="nome" class="form-control" required value="Mercado Democrata">
+          <input type="text" name="nome" class="form-control" required>
         </div>
-        <div class="mb-3">
-          <label class="form-label">ID:</label>
-          <input type="number" name="id" class="form-control" required value="1">
-        </div>
+        <!-- Removido campo de ID -->
         <div class="mb-3">
           <label class="form-label">Categoria:</label>
-          <input type="number" name="categoria" class="form-control" required value="1">
+          <!-- O select será preenchido dinamicamente pelo script.js -->
+          <select name="categoria" id="categoria-select" class="form-control" required></select>
         </div>
         <div class="mb-3">
           <label class="form-label">Descrição:</label>
-          <input type="text" name="Descricao" class="form-control" required value="Tudo para sua casa, aberto todos os dias.">
+          <input type="text" name="Descricao" class="form-control" required>
         </div>
         <div class="mb-3">
           <label class="form-label">Contato:</label>
-          <input type="text" name="Contato" class="form-control" required value="(32)3232-1001">
+          <input type="text" name="Contato" class="form-control" required>
         </div>
         <div class="mb-3">
           <label class="form-label">Whatsapp:</label>
-          <input type="text" name="Whatsapp" class="form-control" required value="(32)9999-1001">
+          <input type="text" name="Whatsapp" class="form-control" required>
         </div>
         <!-- Campo de upload para logo da empresa -->
         <div class="mb-3">
           <label class="form-label">Logo da Empresa:</label>
-          <input type="file" name="logo" id="logo" class="form-control" accept="image/*" required>
+          <input type="file" name="logo" id="logo" class="form-control" accept="image/*">
         </div>
         <div class="mb-3">
           <label class="form-label">Imagens (máx. 3):</label>
-          <input type="file" name="imagens" id="imagens" class="form-control" accept="image/*" multiple required onchange="if(this.files.length>3){alert('Selecione no máximo 3 imagens.'); this.value='';}">
+          <input type="file" name="imagens" id="imagens" class="form-control" accept="image/*" multiple onchange="if(this.files.length>3){alert('Selecione no máximo 3 imagens.'); this.value='';}">
         </div>
         <button type="submit" class="btn btn-success w-100">Salvar Anúncio</button>
       </form>

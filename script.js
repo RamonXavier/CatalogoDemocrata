@@ -175,9 +175,12 @@ function mostrarCartoes(itens) {
 }
 
 // Função para exibir o toast do Bootstrap
-function mostrarToast() {
+function mostrarToast(msg) {
   const toastEl = document.getElementById('toast-copiar');
   if (toastEl) {
+    // Altera a mensagem do toast
+    const body = toastEl.querySelector('.toast-body');
+    if (body) body.textContent = msg || 'Telefone copiado!';
     const toast = new bootstrap.Toast(toastEl);
     toast.show();
   }
@@ -225,7 +228,8 @@ if (form) {
         // NÃO coloque o header 'Content-Type', o browser faz isso automaticamente!
       });
       statusDiv.textContent = 'Anúncio salvo com sucesso!';
-      form.reset();
+      // Exibe toast de sucesso
+      mostrarToast('Anúncio salvo com sucesso!');
     } catch (err) {
       statusDiv.textContent = 'Erro ao salvar anúncio: ' + err.message;
     }
@@ -236,6 +240,11 @@ document.addEventListener('DOMContentLoaded', () => {
   // Só monta o menu de categorias se o elemento existir na página
   if (document.getElementById('category-list')) {
     montarMenuCategorias();
+  }
+  // Preenche o select de categorias no form de anúncio, se existir
+  const categoriaSelect = document.getElementById('categoria-select');
+  if (categoriaSelect) {
+    categoriaSelect.innerHTML = categorias.map(cat => `<option value="${cat.id}">${cat.nome}</option>`).join('');
   }
   carregarAnuncios();
 });

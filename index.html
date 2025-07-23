@@ -15,7 +15,11 @@
             <a href="instrucoes.html">
                 <button class="btn btn-primary">Anuncie!</button>
             </a>
+            <a href="form-anuncio.html">
+                <button class="btn btn-primary" style="margin: 16px auto; display: block;">Cadastrar Novo Anúncio</button>
+            </a>
             <h2>Categorias</h2>
+            <button id="category-toggle" aria-label="Abrir menu de categorias">☰</button>
             <ul id="category-list">
                 <!-- Categorias serão inseridas aqui pelo JS -->
             </ul>
@@ -49,6 +53,41 @@
         </div>
       </div>
     </div>
+    <button id="btn-topo" title="Voltar ao topo">↑</button>
     <script src="script.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        // Menu mobile
+        const categoryToggle = document.getElementById('category-toggle');
+        const categoryList = document.getElementById('category-list');
+        if (categoryToggle && categoryList) {
+          categoryToggle.addEventListener('click', function() {
+            categoryList.classList.toggle('open');
+          });
+          // Fecha o menu ao clicar fora
+          document.addEventListener('click', function(e) {
+            if (window.innerWidth <= 768 && categoryList.classList.contains('open')) {
+              if (!categoryList.contains(e.target) && e.target !== categoryToggle) {
+                categoryList.classList.remove('open');
+              }
+            }
+          });
+        }
+        // Botão voltar ao topo
+        const btnTopo = document.getElementById('btn-topo');
+        window.addEventListener('scroll', function() {
+          if (window.scrollY > 300) {
+            btnTopo.classList.add('show');
+          } else {
+            btnTopo.classList.remove('show');
+          }
+        });
+        if (btnTopo) {
+          btnTopo.addEventListener('click', function() {
+            window.scrollTo({top: 0, behavior: 'smooth'});
+          });
+        }
+      });
+    </script>
 </body>
 </html> 
