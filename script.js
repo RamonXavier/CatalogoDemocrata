@@ -1,3 +1,5 @@
+//npx serve
+
 // Dados diretamente no script.js para funcionar sem servidor
 const categorias = [
   { "nome": "Mercado", "id": 1 },
@@ -202,9 +204,11 @@ function mostrarToast() {
 }
 
 // === CONFIGURAÇÕES ===
-const FREEIMAGE_API_KEY = '6d207e02198a847aa98d0a2a901485a5'; // Substitua pela sua API Key do Freeimage.host
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyLm3WQD8OMQnyhRCtREpd8Z_A1S115reS6efPh1PjxrG560vJP8Dm3qe1H_Nr9Tci8/exec'; // Substitua pela URL do seu Apps Script implantado
+const API_DOTNET_URL = 'https://localhost:7093/api/anuncio/criar'; // Nova URL da sua API .NET
+// const GOOGLE_SCRIPT_URL = 'SUA_URL_DO_APPS_SCRIPT'; // Antigo Google Apps Script (não usado mais)
 
+/*
+// Função de upload de imagem para Freeimage.host (comentada por causa de CORS)
 async function uploadImageToFreeImageHost(file) {
   const formData = new FormData();
   formData.append('key', FREEIMAGE_API_KEY);
@@ -223,6 +227,7 @@ async function uploadImageToFreeImageHost(file) {
     throw new Error('Erro ao fazer upload da imagem: ' + data.status_txt);
   }
 }
+*/
 
 const form = document.getElementById('anuncioForm');
 if (form) {
@@ -232,33 +237,12 @@ if (form) {
     statusDiv.textContent = 'Enviando...';
 
     const formData = new FormData(form);
-    const files = document.getElementById('imagens').files;
-    const imagens = [];
-    for (let file of files) {
-      try {
-        const url = await uploadImageToFreeImageHost(file);
-        imagens.push(url);
-      } catch (err) {
-        statusDiv.textContent = 'Erro ao enviar imagem: ' + err.message;
-        return;
-      }
-    }
-
-    const anuncio = {
-      logo: formData.get('logo'),
-      nome: formData.get('nome'),
-      id: Number(formData.get('id')),
-      categoria: Number(formData.get('categoria')),
-      Descricao: formData.get('Descricao'),
-      Contato: formData.get('Contato'),
-      Whatsapp: formData.get('Whatsapp'),
-      imagens: imagens
-    };
 
     try {
-      await fetch(GOOGLE_SCRIPT_URL, {
+      await fetch('https://localhost:7093/api/Anuncio/criar', {
         method: 'POST',
-        body: JSON.stringify(anuncio)
+        body: formData // Envia todos os campos + arquivos
+        // NÃO coloque o header 'Content-Type', o browser faz isso automaticamente!
       });
       statusDiv.textContent = 'Anúncio salvo com sucesso!';
       form.reset();
@@ -269,7 +253,10 @@ if (form) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  montarMenuCategorias();
+  // Só monta o menu de categorias se o elemento existir na página
+  if (document.getElementById('category-list')) {
+    montarMenuCategorias();
+  }
   if (window.location.hash) {
     selecionarCategoriaPorHash();
   } else if (categorias.length > 0) {
