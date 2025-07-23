@@ -219,7 +219,23 @@ if (form) {
     const statusDiv = document.getElementById('status');
     statusDiv.textContent = 'Enviando...';
 
-    const formData = new FormData(form);
+    const formData = new FormData();
+    // Adiciona todos os campos do formulário como texto, exceto arquivos
+    Array.from(form.elements).forEach(el => {
+      if (!el.name) return;
+      if (el.type === 'file') {
+        // Adiciona arquivos normalmente
+        if (el.files && el.files.length > 0) {
+          if (el.multiple) {
+            Array.from(el.files).forEach(file => formData.append(el.name, file));
+          } else {
+            formData.append(el.name, el.files[0]);
+          }
+        }
+      } else {
+        formData.append(el.name, String(el.value));
+      }
+    });
 
     try {
       await fetch('https://api-portal-democrata-jf.runasp.net/api/anuncio/criar', {
@@ -245,6 +261,36 @@ document.addEventListener('DOMContentLoaded', () => {
   const categoriaSelect = document.getElementById('categoria-select');
   if (categoriaSelect) {
     categoriaSelect.innerHTML = categorias.map(cat => `<option value="${cat.id}">${cat.nome}</option>`).join('');
+  }
+  // Máscara para telefone (Contato)
+  const contatoInput = document.getElementById('Contato');
+  if (contatoInput) {
+    contatoInput.addEventListener('input', function(e) {
+      let v = this.value.replace(/\D/g, '');
+      if (v.length > 11) v = v.slice(0, 11);
+      if (v.length > 6) {
+        this.value = `(${v.slice(0,2)})${v.slice(2,7)}-${v.slice(7)}`;
+      } else if (v.length > 2) {
+        this.value = `(${v.slice(0,2)})${v.slice(2)}`;
+      } else if (v.length > 0) {
+        this.value = `(${v}`;
+      }
+    });
+  }
+  // Máscara para telefone (Whatsapp)
+  const whatsappInput = document.getElementById('Whatsapp');
+  if (whatsappInput) {
+    whatsappInput.addEventListener('input', function(e) {
+      let v = this.value.replace(/\D/g, '');
+      if (v.length > 11) v = v.slice(0, 11);
+      if (v.length > 6) {
+        this.value = `(${v.slice(0,2)})${v.slice(2,7)}-${v.slice(7)}`;
+      } else if (v.length > 2) {
+        this.value = `(${v.slice(0,2)})${v.slice(2)}`;
+      } else if (v.length > 0) {
+        this.value = `(${v}`;
+      }
+    });
   }
   carregarAnuncios();
 });
