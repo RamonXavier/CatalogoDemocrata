@@ -24,7 +24,7 @@ async function carregarAnuncios() {
   mostrarLoading();
 
   try {
-    const resp = await fetch('http://api-portal-democrata-jf.runasp.net/api/anuncio/googlesheets');
+    const resp = await fetch('https://api-portal-democrata-jf.runasp.net/api/anuncio/googlesheets');
     if (!resp.ok) throw new Error('Erro ao buscar anúncios');
     const data = await resp.json();
     todosItens = data.map(item => ({
@@ -184,7 +184,7 @@ function mostrarToast() {
 }
 
 // === CONFIGURAÇÕES ===
-const API_DOTNET_URL = 'http://api-portal-democrata-jf.runasp.net/api/anuncio/criar'; // Nova URL da sua API .NET
+const API_DOTNET_URL = 'https://api-portal-democrata-jf.runasp.net/api/anuncio/criar'; // Nova URL da sua API .NET
 // const GOOGLE_SCRIPT_URL = 'SUA_URL_DO_APPS_SCRIPT'; // Antigo Google Apps Script (não usado mais)
 
 /*
@@ -219,7 +219,7 @@ if (form) {
     const formData = new FormData(form);
 
     try {
-      await fetch('http://api-portal-democrata-jf.runasp.net/api/anuncio/criar', {
+      await fetch('https://api-portal-democrata-jf.runasp.net/api/anuncio/criar', {
         method: 'POST',
         body: formData // Envia todos os campos + arquivos
         // NÃO coloque o header 'Content-Type', o browser faz isso automaticamente!
