@@ -3,7 +3,7 @@
 // Dados diretamente no script.js para funcionar sem servidor
 const categorias = [
   { "nome": "Mercados", "id": 1 },
-  { "nome": "Padarias", "id": 2 },
+  { "nome": "Padarias/Confeitarias", "id": 2 },
   { "nome": "Farmácias", "id": 3 },
   { "nome": "Restaurantes/Bares/Lanchonetes", "id": 4 },
   { "nome": "Frete/Transporte", "id": 5 },
@@ -16,7 +16,10 @@ const categorias = [
   { "nome": "Pintores", "id": 12 },
   { "nome": "Em busca de emprego", "id": 13 },
   { "nome": "Vagas de emprego", "id": 14 },
-  { "nome": "Outros", "id": 15 }
+  { "nome": "Materiais de construção", "id": 15 },
+  { "nome": "Moda", "id": 15 },
+  { "nome": "Saúde/Bem-estar", "id": 16 },
+  { "nome": "Outros", "id": 25 }
 ];
 
 let todosItens = [];
@@ -39,6 +42,8 @@ async function carregarAnuncios() {
       Descricao: item.descricao,
       Contato: item.contato,
       Whatsapp: item.whatsapp,
+      Instagram: item.instagram,
+      Facebook: item.facebook,
       imagens: [item.imagem1, item.imagem2, item.imagem3].filter(Boolean),
       logo: item.logo // garantir que a propriedade logo está presente
     }));
@@ -161,7 +166,18 @@ function mostrarCartoes(itens) {
           <button class="btn-copiar" data-contato="${item.Contato}" title="Copiar telefone">📋</button>
         </div>
         <div class="contato-row-whatsapp">
-          <a href="https://wa.me/55${item.Whatsapp.replace(/[^\d]/g, '')}" class="btn btn-success" target="_blank">WhatsApp</a>
+          <a href="https://wa.me/55${item.Whatsapp.replace(/[^\d]/g, '')}" class="btn btn-success" target="_blank">
+            <img src="assets/img/sociais/whatsapp.png" alt="WhatsApp" style="width:20px; height:20px; margin-right:8px; vertical-align:middle;">
+            WhatsApp
+          </a>
+        </div>
+        <div class="redes-sociais" style="display:flex; gap:10px; margin-top:10px; justify-content:center;">
+          ${item.Instagram ? `<a href="${item.Instagram}" target="_blank" title="Instagram">
+            <img src="assets/img/sociais/instagram.png" alt="Instagram" style="width:32px; height:32px;">
+          </a>` : ''}
+          ${item.Facebook ? `<a href="${item.Facebook}" target="_blank" title="Facebook">
+            <img src="assets/img/sociais/facebook.png" alt="Facebook" style="width:32px; height:32px;">
+          </a>` : ''}
         </div>
       </div>
       ${carouselHtml}
