@@ -2,6 +2,7 @@
 
 // Dados diretamente no script.js para funcionar sem servidor
 const categorias = [
+  { "nome": "Todos", "id": 0 }, // Categoria especial para mostrar todos os anúncios
   { "nome": "Restaurantes/Bares/Lanchonetes", "id": 4 },
   { "nome": "Mercados", "id": 1 },
   { "nome": "Padarias/Confeitarias", "id": 2 },
@@ -78,6 +79,7 @@ function atualizarTela() {
   if (window.location.hash) {
     selecionarCategoriaPorHash();
   } else if (categorias.length > 0) {
+    // Por padrão, seleciona a categoria "Todos" (primeira da lista)
     selecionarCategoria(categorias[0]);
   }
 }
@@ -119,7 +121,10 @@ function selecionarCategoria(categoria) {
   document.querySelectorAll('#category-list button').forEach(btn => {
     btn.classList.toggle('active', btn.getAttribute('data-id') == categoria.id);
   });
-  const itens = todosItens.filter(item => item.categoria == categoria.id);
+  
+  // Se categoria "Todos" (id: 0), mostra todos os anúncios
+  // Caso contrário, filtra por categoria específica
+  const itens = categoria.id === 0 ? todosItens : todosItens.filter(item => item.categoria == categoria.id);
   mostrarCartoes(itens);
 }
 
@@ -269,9 +274,14 @@ if (form) {
         body: formData // Envia todos os campos + arquivos
         // NÃO coloque o header 'Content-Type', o browser faz isso automaticamente!
       });
-      statusDiv.textContent = 'Anúncio salvo com sucesso!';
+      statusDiv.textContent = 'Anúncio salvo com sucesso! Redirecionando...';
       // Exibe toast de sucesso
       mostrarToast('Anúncio salvo com sucesso!');
+      
+      // Redireciona para a página inicial após 2 segundos
+      setTimeout(() => {
+        window.location.href = 'index.html';
+      }, 2000);
     } catch (err) {
       statusDiv.textContent = 'Erro ao salvar anúncio: ' + err.message;
     }
@@ -286,7 +296,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // Preenche o select de categorias no form de anúncio, se existir
   const categoriaSelect = document.getElementById('categoria-select');
   if (categoriaSelect) {
-    categoriaSelect.innerHTML = categorias.map(cat => `<option value="${cat.id}">${cat.nome}</option>`).join('');
+    // Filtra a categoria "Todos" (id: 0) do formulário, pois é apenas para visualização
+    const categoriasParaForm = categorias.filter(cat => cat.id !== 0);
+    categoriaSelect.innerHTML = categoriasParaForm.map(cat => `<option value="${cat.id}">${cat.nome}</option>`).join('');
   }
   // Máscara para telefone (Contato)
   const contatoInput = document.getElementById('Contato');

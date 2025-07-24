@@ -51,7 +51,21 @@
           <label class="form-label">Facebook:</label>
           <input type="url" name="Facebook" id="Facebook" class="form-control" placeholder="https://facebook.com/seuusuario">
         </div>
-        <!-- Campo de upload para logo da empresa -->
+        
+        <!-- AVISO IMPORTANTE SOBRE IMAGENS -->
+        <div class="alert alert-warning mb-3" role="alert">
+          <h6 class="alert-heading"><strong>📷 Sobre as Imagens do seu Anúncio</strong></h6>
+          <p class="mb-2">Para adicionar <strong>logo da empresa</strong> e <strong>imagens do produto/serviço</strong>, entre em contato com um dos administradores:</p>
+          <ul class="mb-2" style="padding-left: 20px;">
+            <li><strong>Ramon:</strong> <a href="https://wa.me/553291375797" target="_blank" class="text-success">WhatsApp</a></li>
+            <li><strong>Talía:</strong> <a href="https://wa.me/553291289925" target="_blank" class="text-success">WhatsApp</a></li>
+            <li><strong>Beatriz:</strong> <a href="https://wa.me/5521982434357" target="_blank" class="text-success">WhatsApp</a></li>
+            <li><strong>Ivon:</strong> <a href="https://wa.me/553291203888" target="_blank" class="text-success">WhatsApp</a></li>
+          </ul>
+          <small class="text-muted">Eles irão ajudar você a inserir as imagens após o cadastro do anúncio.</small>
+        </div>
+        
+        <!-- CAMPOS DE UPLOAD COMENTADOS TEMPORARIAMENTE
         <div class="mb-3">
           <label class="form-label">Logo da Empresa:</label>
           <input type="file" name="logo" id="logo" class="form-control" accept="image/*">
@@ -60,7 +74,8 @@
           <label class="form-label">Imagens (máx. 3):</label>
           <input type="file" name="imagens" id="imagens" class="form-control" accept="image/*" multiple onchange="if(this.files.length>3){alert('Selecione no máximo 3 imagens.'); this.value='';}">
         </div>
-        <!-- <button type="submit" class="btn btn-success w-100">Salvar Anúncio</button> -->
+        -->
+        <button type="submit" class="btn btn-success w-100">Salvar Anúncio</button>
       </form>
       <div id="status" class="mt-3"></div>
     </main>
