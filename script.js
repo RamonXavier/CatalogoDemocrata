@@ -2,13 +2,16 @@
 
 // Dados diretamente no script.js para funcionar sem servidor
 const categorias = [
+  { "nome": "Restaurantes/Bares/Lanchonetes", "id": 4 },
   { "nome": "Mercados", "id": 1 },
   { "nome": "Padarias/Confeitarias", "id": 2 },
-  { "nome": "Farmácias", "id": 3 },
-  { "nome": "Restaurantes/Bares/Lanchonetes", "id": 4 },
   { "nome": "Frete/Transporte", "id": 5 },
-  { "nome": "Eletricistas/Encanadores", "id": 6 },
+  { "nome": "Moda", "id": 15 },
+  { "nome": "Materiais de construção", "id": 17 },
+  { "nome": "Farmácias", "id": 3 },
+  { "nome": "Saúde/Bem-estar", "id": 16 },
   { "nome": "Salão de beleza/Barbearia", "id": 7 },
+  { "nome": "Eletricistas/Encanadores", "id": 6 },
   { "nome": "Costureiras/Alfaiates", "id": 8 },
   { "nome": "Limpeza", "id": 9 },
   { "nome": "Jardinagem", "id": 10 },
@@ -16,9 +19,6 @@ const categorias = [
   { "nome": "Pintores", "id": 12 },
   { "nome": "Em busca de emprego", "id": 13 },
   { "nome": "Vagas de emprego", "id": 14 },
-  { "nome": "Materiais de construção", "id": 15 },
-  { "nome": "Moda", "id": 15 },
-  { "nome": "Saúde/Bem-estar", "id": 16 },
   { "nome": "Outros", "id": 25 }
 ];
 
