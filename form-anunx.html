@@ -27,9 +27,20 @@
         </div>
         <!-- Removido campo de ID -->
         <div class="mb-3">
-          <label class="form-label">Categoria:</label>
+          <label class="form-label fw-bold text-primary">
+            <i class="bi bi-tag-fill me-2"></i>
+            📂 Categoria: <span class="text-danger">*</span>
+          </label>
+          <small class="form-text text-muted d-block mb-2">
+            ⚠️ <strong>Escolha com cuidado!</strong> Esta categoria define onde seu anúncio aparecerá no portal.
+          </small>
           <!-- O select será preenchido dinamicamente pelo script.js -->
-          <select name="categoria" id="categoria-select" class="form-control" required></select>
+          <select name="categoria" id="categoria-select" class="form-control border-primary" style="border-width: 2px; background-color: #f8f9ff; font-weight: 500;" required>
+            <option value="" disabled selected>👆 Selecione a categoria do seu anúncio</option>
+          </select>
+          <div class="invalid-feedback">
+            Por favor, selecione uma categoria para seu anúncio.
+          </div>
         </div>
         <div class="mb-3">
           <label class="form-label">Descrição:</label>
@@ -81,5 +92,36 @@
     </main>
   </div>
   <script src="script.js"></script>
+  <script>
+    // Script para destacar o campo categoria quando selecionado
+    document.addEventListener('DOMContentLoaded', function() {
+      const categoriaSelect = document.getElementById('categoria-select');
+      if (categoriaSelect) {
+        categoriaSelect.addEventListener('change', function() {
+          if (this.value) {
+            // Categoria selecionada - destaque positivo
+            this.style.backgroundColor = '#d4edda';
+            this.style.borderColor = '#28a745';
+            this.style.color = '#155724';
+          } else {
+            // Voltar ao estado original
+            this.style.backgroundColor = '#f8f9ff';
+            this.style.borderColor = '#007bff';
+            this.style.color = '#495057';
+          }
+        });
+
+        // Destaque ao focar no campo
+        categoriaSelect.addEventListener('focus', function() {
+          this.style.boxShadow = '0 0 0 3px rgba(0,123,255,0.25)';
+        });
+
+        // Remove destaque ao sair do campo
+        categoriaSelect.addEventListener('blur', function() {
+          this.style.boxShadow = 'none';
+        });
+      }
+    });
+  </script>
 </body>
 </html> 

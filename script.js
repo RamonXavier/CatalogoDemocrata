@@ -298,7 +298,9 @@ document.addEventListener('DOMContentLoaded', () => {
   if (categoriaSelect) {
     // Filtra a categoria "Todos" (id: 0) do formulário, pois é apenas para visualização
     const categoriasParaForm = categorias.filter(cat => cat.id !== 0);
-    categoriaSelect.innerHTML = categoriasParaForm.map(cat => `<option value="${cat.id}">${cat.nome}</option>`).join('');
+    // Mantém o placeholder e adiciona as opções de categoria
+    const optionsHtml = categoriasParaForm.map(cat => `<option value="${cat.id}">${cat.nome}</option>`).join('');
+    categoriaSelect.innerHTML = `<option value="" disabled selected>👆 Selecione a categoria do seu anúncio</option>${optionsHtml}`;
   }
   // Máscara para telefone (Contato)
   const contatoInput = document.getElementById('Contato');
