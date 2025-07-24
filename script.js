@@ -9,7 +9,7 @@ const categorias = [
   { "nome": "Moda", "id": 15 },
   { "nome": "Materiais de construção", "id": 17 },
   { "nome": "Farmácias", "id": 3 },
-  { "nome": "Saúde/Bem-estar", "id": 16 },
+  { "nome": "Saúde/Bem-estar/Esportes", "id": 16 },
   { "nome": "Salão de beleza/Barbearia", "id": 7 },
   { "nome": "Eletricistas/Encanadores", "id": 6 },
   { "nome": "Costureiras/Alfaiates", "id": 8 },
@@ -131,28 +131,33 @@ function mostrarCartoes(itens) {
   }
   // Embaralha os itens antes de exibir
   const itensEmbaralhados = [...itens].sort(() => Math.random() - 0.5);
-  itensEmbaralhados.forEach(item => {
+  itensEmbaralhados.forEach((item, index) => {
     const card = document.createElement('div');
     card.className = 'card';
-    // Carrossel de imagens
-    const carouselId = `carousel-${item.id}`;
-    let carouselHtml = `<div id="${carouselId}" class="carousel slide card-carousel" data-bs-ride="carousel">
+    // Carrossel de imagens - ID único com timestamp e index para evitar conflitos
+    const carouselId = `carousel-${item.id}-${Date.now()}-${index}`;
+    let carouselHtml = `<div id="${carouselId}" class="carousel slide card-carousel">
       <div class="carousel-inner">`;
     item.imagens.forEach((img, idx) => {
       carouselHtml += `<div class="carousel-item${idx === 0 ? ' active' : ''}">
         <img src="${img}" class="d-block w-100 card-carousel-img" alt="Imagem ${idx+1}">
       </div>`;
     });
-    carouselHtml += `</div>
-      <button class="carousel-control-prev" type="button" data-bs-target="#${carouselId}" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Anterior</span>
-      </button>
-      <button class="carousel-control-next" type="button" data-bs-target="#${carouselId}" data-bs-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Próxima</span>
-      </button>
-    </div>`;
+    carouselHtml += `</div>`;
+    
+    // Só adiciona os controles se houver mais de uma imagem
+    if (item.imagens.length > 1) {
+      carouselHtml += `
+        <button class="carousel-control-prev" type="button" data-bs-target="#${carouselId}" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Anterior</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#${carouselId}" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Próxima</span>
+        </button>`;
+    }
+    carouselHtml += `</div>`;
     card.innerHTML = `
       <svg width="100%" height="100%" viewBox="0 0 1440 490" xmlns="http://www.w3.org/2000/svg" class="onda-svg-topo"><path d="M 0,500 L 0,125 C 95.92820512820512,152.96666666666667 191.85641025641024,180.93333333333334 264,181 C 336.14358974358976,181.06666666666666 384.50256410256407,153.23333333333335 463,126 C 541.4974358974359,98.76666666666667 650.1333333333333,72.13333333333333 744,76 C 837.8666666666667,79.86666666666667 916.9641025641026,114.23333333333335 988,111 C 1059.0358974358974,107.76666666666665 1122.0102564102565,66.93333333333332 1196,63 C 1269.9897435897435,59.06666666666668 1354.9948717948719,92.03333333333333 1440,125 L 1440,500 L 0,500 Z" stroke="none" stroke-width="0" fill="#fcb900" fill-opacity="0.53"></path><path d="M 0,500 L 0,291 C 90.86666666666665,305.15128205128207 181.7333333333333,319.30256410256413 263,310 C 344.2666666666667,300.69743589743587 415.9333333333334,267.9410256410256 490,254 C 564.0666666666666,240.05897435897438 640.5333333333334,244.93333333333334 715,264 C 789.4666666666666,283.06666666666666 861.9333333333333,316.325641025641 938,327 C 1014.0666666666667,337.674358974359 1093.7333333333333,325.76410256410253 1178,316 C 1262.2666666666667,306.23589743589747 1351.1333333333332,298.6179487179487 1440,291 L 1440,500 L 0,500 Z" stroke="none" stroke-width="0" fill="#fcb900" fill-opacity="1"></path></svg>
       <div class="card-topo-onda">

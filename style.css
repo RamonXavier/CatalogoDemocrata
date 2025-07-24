@@ -3,6 +3,7 @@ body {
     font-family: Arial, sans-serif;
     background: #f8f8f8;
     color: #222;
+    overflow-x: hidden; /* Previne scroll horizontal */
 }
 
 .container {
@@ -11,6 +12,8 @@ body {
     align-items: stretch;
     margin-left: 0px!important;
     padding-left: 0px!important;
+    max-width: 100vw; /* Garante que não passe da largura da viewport */
+    overflow-x: hidden; /* Previne overflow horizontal */
 }
 
 .sidebar {
@@ -64,12 +67,19 @@ body {
     flex: 1;
     padding: 32px 24px;
     box-sizing: border-box;
+    max-width: 100%; /* Garante que não exceda a largura */
+    overflow-x: hidden; /* Previne overflow horizontal */
 }
 
 #main-title {
     font-size: 2em;
     margin-bottom: 24px;
     text-align: center;
+    word-wrap: break-word; /* Quebra palavras longas */
+    overflow-wrap: break-word; /* Alternativa moderna */
+    hyphens: auto; /* Adiciona hífens quando quebra */
+    max-width: 100%; /* Não excede a largura do container */
+    line-height: 1.2; /* Melhora espaçamento entre linhas */
 }
 
 #cards-container {
@@ -294,7 +304,7 @@ body {
   position: fixed;
   bottom: 32px;
   right: 24px;
-  z-index: 2000;
+  z-index: 1000; /* Reduzido para evitar conflitos */
   background: #fcb900;
   color: #222;
   border: none;
@@ -305,32 +315,58 @@ body {
   box-shadow: 0 2px 8px rgba(0,0,0,0.15);
   cursor: pointer;
   transition: opacity 0.2s;
+  /* Garantir que não cause overflow */
+  max-width: 48px;
+  max-height: 48px;
+  flex-shrink: 0;
 }
 #btn-topo.show {
   display: block;
   opacity: 1;
 }
 
+/* Responsividade para o botão */
+@media (max-width: 700px) {
+  #btn-topo {
+    bottom: 20px;
+    right: 16px;
+    width: 44px;
+    height: 44px;
+    font-size: 1.8em;
+  }
+}
+
 @media (max-width: 700px) {
     .container {
         flex-direction: column;
+        max-width: 100vw; /* Garante largura máxima */
     }
     .sidebar {
         width: 100%;
         padding: 12px;
         text-align: center;
+        max-width: 100vw; /* Evita overflow */
     }
     .main-content {
-        padding: 16px 4px;
+        padding: 16px 8px; /* Reduzido padding lateral */
+        max-width: 100vw; /* Garante largura máxima */
+    }
+    #main-title {
+        font-size: 1.6em; /* Reduz tamanho da fonte em mobile */
+        padding: 0 8px; /* Adiciona padding lateral */
+        margin-bottom: 16px;
     }
     #cards-container {
         gap: 16px;
+        padding: 1rem 4px; /* Reduz padding */
+        max-width: 100vw; /* Garante largura máxima */
     }
     .card {
-        max-width: 98vw;
+        max-width: calc(100vw - 16px); /* Considera padding */
         padding: 12px;
+        margin: 0 4px; /* Margem lateral pequena */
     }
     .card-carousel {
-        max-width: 98vw;
+        max-width: calc(100vw - 32px); /* Considera margens */
     }
 } 
