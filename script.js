@@ -6,7 +6,7 @@ const categorias = [
   { "nome": "Restaurantes/Bares/Lanchonetes", "id": 4 },
   { "nome": "Mercados", "id": 1 },
   { "nome": "Padarias/Confeitarias", "id": 2 },
-  { "nome": "Frete/Transporte", "id": 5 },
+  { "nome": "Frete/Transporte/Guinchos", "id": 5 },
   { "nome": "Moda", "id": 15 },
   { "nome": "Materiais de construção", "id": 17 },
   { "nome": "Farmácias", "id": 3 },
@@ -76,6 +76,12 @@ function atualizarTela() {
     mostrarLoading();
     return;
   }
+  
+  // Atualiza o menu de categorias com as contagens após carregar os dados
+  if (document.getElementById('category-list')) {
+    montarMenuCategorias();
+  }
+  
   if (window.location.hash) {
     selecionarCategoriaPorHash();
   } else if (categorias.length > 0) {
@@ -90,12 +96,51 @@ const mainTitle = document.getElementById('main-title');
 
 function montarMenuCategorias() {
   categoryList.innerHTML = '';
-  categorias.forEach(cat => {
+  
+  // Calcula a quantidade de itens por categoria
+  const categoriasComContagem = categorias.map(cat => {
+    let quantidade;
+    if (cat.id === 0) {
+      // "Todos" = total de anúncios
+      quantidade = todosItens.length;
+    } else {
+      // Conta itens da categoria específica
+      quantidade = todosItens.filter(item => item.categoria == cat.id).length;
+    }
+    return {
+      ...cat,
+      quantidade: quantidade
+    };
+  });
+  
+  // Separa "Todos" das outras categorias
+  const categoriaTodos = categoriasComContagem.find(cat => cat.id === 0);
+  const outrasCategoriasOrdenadas = categoriasComContagem
+    .filter(cat => cat.id !== 0)
+    .sort((a, b) => b.quantidade - a.quantidade); // Ordem decrescente
+  
+  // Monta lista final: "Todos" primeiro, depois outras ordenadas
+  const categoriasFinais = categoriaTodos ? 
+    [categoriaTodos, ...outrasCategoriasOrdenadas] : 
+    outrasCategoriasOrdenadas;
+  
+  // Cria os botões do menu
+  categoriasFinais.forEach(cat => {
     const li = document.createElement('li');
     const btn = document.createElement('button');
-    btn.textContent = cat.nome;
+    
+    // Formato com destaque no número: "(quantidade) Nome da Categoria"
+    btn.innerHTML = `<span style="background: #fcb900; color: #222; padding: 2px 6px; border-radius: 4px; font-weight: bold; font-size: 0.9em; margin-right: 8px;">${cat.quantidade}</span>${cat.nome}`;
     btn.onclick = () => selecionarCategoriaComRota(cat);
     btn.setAttribute('data-id', cat.id);
+    
+    // Destaque visual para categoria "Todos"
+    if (cat.id === 0) {
+      btn.style.fontWeight = 'bold';
+      btn.style.borderLeft = '4px solid #fcb900';
+      btn.style.backgroundColor = '#f8f9fa';
+    }
+    
     li.appendChild(btn);
     categoryList.appendChild(li);
   });
@@ -289,10 +334,7 @@ if (form) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Só monta o menu de categorias se o elemento existir na página
-  if (document.getElementById('category-list')) {
-    montarMenuCategorias();
-  }
+  // O menu de categorias será montado após carregar os dados (em atualizarTela)
   // Preenche o select de categorias no form de anúncio, se existir
   const categoriaSelect = document.getElementById('categoria-select');
   if (categoriaSelect) {
