@@ -10,6 +10,7 @@ const categorias = [
   { "nome": "Moda", "id": 15 },
   { "nome": "Materiais de construção", "id": 17 },
   { "nome": "Farmácias", "id": 3 },
+  { "nome": "Mídia, Marketing e Publicidade", "id": 18 },
   { "nome": "Saúde/Bem-estar/Esportes", "id": 16 },
   { "nome": "Salão de beleza/Barbearia", "id": 7 },
   { "nome": "Eletricistas/Encanadores", "id": 6 },
