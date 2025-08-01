@@ -7,6 +7,7 @@ const categorias = [
   { "nome": "Mercados", "id": 1 },
   { "nome": "Padarias/Confeitarias", "id": 2 },
   { "nome": "Frete/Transporte/Guinchos", "id": 5 },
+  { "nome": "Motoboys/Entregas", "id": 19 },
   { "nome": "Moda", "id": 15 },
   { "nome": "Materiais de construção", "id": 17 },
   { "nome": "Farmácias", "id": 3 },
