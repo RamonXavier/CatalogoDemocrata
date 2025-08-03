@@ -163,6 +163,12 @@ function selecionarCategoriaComRota(categoria) {
   const nomeUrl = categoria.nome.toLowerCase().replace(/\s|\(\w+\)/g, '').normalize('NFD').replace(/[^\w]/g, '');
   window.location.hash = `/${nomeUrl}`;
   selecionarCategoria(categoria);
+  
+  // Fecha o menu mobile se estiver aberto
+  const categoryList = document.getElementById('category-list');
+  if (categoryList && categoryList.classList.contains('open')) {
+    categoryList.classList.remove('open');
+  }
 }
 
 function selecionarCategoriaPorHash() {
