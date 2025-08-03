@@ -304,6 +304,10 @@ const form = document.getElementById('anuncioForm');
 if (form) {
   form.addEventListener('submit', async function(e) {
     e.preventDefault();
+    
+    // Mostra o loading overlay
+    mostrarLoading();
+    
     const statusDiv = document.getElementById('status');
     statusDiv.textContent = 'Enviando...';
 
@@ -331,6 +335,10 @@ if (form) {
         body: formData // Envia todos os campos + arquivos
         // NÃO coloque o header 'Content-Type', o browser faz isso automaticamente!
       });
+      
+      // Esconde o loading overlay
+      esconderLoading();
+      
       statusDiv.textContent = 'Anúncio salvo com sucesso! Redirecionando...';
       // Exibe toast de sucesso
       mostrarToast('Anúncio salvo com sucesso!');
@@ -340,13 +348,14 @@ if (form) {
         window.location.href = 'index.html';
       }, 2000);
     } catch (err) {
+      // Esconde o loading overlay em caso de erro
+      esconderLoading();
       statusDiv.textContent = 'Erro ao salvar anúncio: ' + err.message;
     }
   });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  // O menu de categorias será montado após carregar os dados (em atualizarTela)
   // Preenche o select de categorias no form de anúncio, se existir
   const categoriaSelect = document.getElementById('categoria-select');
   if (categoriaSelect) {
@@ -356,6 +365,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const optionsHtml = categoriasParaForm.map(cat => `<option value="${cat.id}">${cat.nome}</option>`).join('');
     categoriaSelect.innerHTML = `<option value="" disabled selected>👆 Selecione a categoria do seu anúncio</option>${optionsHtml}`;
   }
+  
   // Máscara para telefone (Contato)
   const contatoInput = document.getElementById('Contato');
   if (contatoInput) {
@@ -371,6 +381,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+  
   // Máscara para telefone (Whatsapp)
   const whatsappInput = document.getElementById('Whatsapp');
   if (whatsappInput) {
@@ -386,7 +397,11 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
-  carregarAnuncios();
+  
+  // Só carrega anúncios se estiver na página principal (index.html)
+  if (document.getElementById('cards-container')) {
+    carregarAnuncios();
+  }
 });
 
 window.addEventListener('hashchange', selecionarCategoriaPorHash); 
