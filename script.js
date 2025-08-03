@@ -54,19 +54,26 @@ async function carregarAnuncios() {
     erroCarregamento = err.message;
   } finally {
     carregando = false;
-    esconderLoading();
     atualizarTela();
   }
 }
 
 function mostrarLoading() {
-  cardsContainer.innerHTML = '<div class="loading">Carregando anúncios...</div>';
+  const loadingOverlay = document.getElementById('loading-overlay');
+  if (loadingOverlay) {
+    loadingOverlay.style.display = 'flex';
+  }
 }
+
 function esconderLoading() {
-  // Não faz nada, pois atualizarTela() irá sobrescrever o conteúdo
+  const loadingOverlay = document.getElementById('loading-overlay');
+  if (loadingOverlay) {
+    loadingOverlay.style.display = 'none';
+  }
 }
 function mostrarErro() {
-  cardsContainer.innerHTML = `<div class="erro" style="color:red; font-size:1.2em;">${erroCarregamento}</div>`;
+  esconderLoading(); // Esconde o loading overlay
+  cardsContainer.innerHTML = `<div class="erro" style="color:red; font-size:1.2em; text-align: center; padding: 20px;">${erroCarregamento}</div>`;
 }
 
 function atualizarTela() {
@@ -78,6 +85,9 @@ function atualizarTela() {
     mostrarLoading();
     return;
   }
+  
+  // Esconde o loading overlay quando não está mais carregando
+  esconderLoading();
   
   // Atualiza o menu de categorias com as contagens após carregar os dados
   if (document.getElementById('category-list')) {
