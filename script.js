@@ -23,6 +23,7 @@ const categorias = [
   { "nome": "Mídia, Marketing e Publicidade", "id": 18 },
   { "nome": "Motoboys/Entregas", "id": 19 },
   { "nome": "Oficinas Mecânicas/Autopeças", "id": 20 },
+  { "nome": "Clinica Veterinária/Petshop/Loja de animais", "id": 21 },
   { "nome": "Outros", "id": 25 }
 ];
 
