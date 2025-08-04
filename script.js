@@ -55,19 +55,26 @@ async function carregarAnuncios() {
     erroCarregamento = err.message;
   } finally {
     carregando = false;
-    esconderLoading();
     atualizarTela();
   }
 }
 
 function mostrarLoading() {
-  cardsContainer.innerHTML = '<div class="loading">Carregando anúncios...</div>';
+  const loadingOverlay = document.getElementById('loading-overlay');
+  if (loadingOverlay) {
+    loadingOverlay.style.display = 'flex';
+  }
 }
+
 function esconderLoading() {
-  // Não faz nada, pois atualizarTela() irá sobrescrever o conteúdo
+  const loadingOverlay = document.getElementById('loading-overlay');
+  if (loadingOverlay) {
+    loadingOverlay.style.display = 'none';
+  }
 }
 function mostrarErro() {
-  cardsContainer.innerHTML = `<div class="erro" style="color:red; font-size:1.2em;">${erroCarregamento}</div>`;
+  esconderLoading(); // Esconde o loading overlay
+  cardsContainer.innerHTML = `<div class="erro" style="color:red; font-size:1.2em; text-align: center; padding: 20px;">${erroCarregamento}</div>`;
 }
 
 function atualizarTela() {
@@ -79,6 +86,9 @@ function atualizarTela() {
     mostrarLoading();
     return;
   }
+  
+  // Esconde o loading overlay quando não está mais carregando
+  esconderLoading();
   
   // Atualiza o menu de categorias com as contagens após carregar os dados
   if (document.getElementById('category-list')) {
@@ -154,6 +164,12 @@ function selecionarCategoriaComRota(categoria) {
   const nomeUrl = categoria.nome.toLowerCase().replace(/\s|\(\w+\)/g, '').normalize('NFD').replace(/[^\w]/g, '');
   window.location.hash = `/${nomeUrl}`;
   selecionarCategoria(categoria);
+  
+  // Fecha o menu mobile se estiver aberto
+  const categoryList = document.getElementById('category-list');
+  if (categoryList && categoryList.classList.contains('open')) {
+    categoryList.classList.remove('open');
+  }
 }
 
 function selecionarCategoriaPorHash() {
@@ -295,6 +311,10 @@ const form = document.getElementById('anuncioForm');
 if (form) {
   form.addEventListener('submit', async function(e) {
     e.preventDefault();
+    
+    // Mostra o loading overlay
+    mostrarLoading();
+    
     const statusDiv = document.getElementById('status');
     statusDiv.textContent = 'Enviando...';
 
@@ -322,6 +342,10 @@ if (form) {
         body: formData // Envia todos os campos + arquivos
         // NÃO coloque o header 'Content-Type', o browser faz isso automaticamente!
       });
+      
+      // Esconde o loading overlay
+      esconderLoading();
+      
       statusDiv.textContent = 'Anúncio salvo com sucesso! Redirecionando...';
       // Exibe toast de sucesso
       mostrarToast('Anúncio salvo com sucesso!');
@@ -331,13 +355,14 @@ if (form) {
         window.location.href = 'index.html';
       }, 2000);
     } catch (err) {
+      // Esconde o loading overlay em caso de erro
+      esconderLoading();
       statusDiv.textContent = 'Erro ao salvar anúncio: ' + err.message;
     }
   });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  // O menu de categorias será montado após carregar os dados (em atualizarTela)
   // Preenche o select de categorias no form de anúncio, se existir
   const categoriaSelect = document.getElementById('categoria-select');
   if (categoriaSelect) {
@@ -347,6 +372,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const optionsHtml = categoriasParaForm.map(cat => `<option value="${cat.id}">${cat.nome}</option>`).join('');
     categoriaSelect.innerHTML = `<option value="" disabled selected>👆 Selecione a categoria do seu anúncio</option>${optionsHtml}`;
   }
+  
   // Máscara para telefone (Contato)
   const contatoInput = document.getElementById('Contato');
   if (contatoInput) {
@@ -362,6 +388,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+  
   // Máscara para telefone (Whatsapp)
   const whatsappInput = document.getElementById('Whatsapp');
   if (whatsappInput) {
@@ -377,7 +404,11 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
-  carregarAnuncios();
+  
+  // Só carrega anúncios se estiver na página principal (index.html)
+  if (document.getElementById('cards-container')) {
+    carregarAnuncios();
+  }
 });
 
 window.addEventListener('hashchange', selecionarCategoriaPorHash); 
