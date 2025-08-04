@@ -3,18 +3,13 @@
 // Dados diretamente no script.js para funcionar sem servidor
 const categorias = [
   { "nome": "Todos", "id": 0 }, // Categoria especial para mostrar todos os anúncios
-  { "nome": "Restaurantes/Bares/Lanchonetes", "id": 4 },
   { "nome": "Mercados", "id": 1 },
   { "nome": "Padarias/Confeitarias", "id": 2 },
-  { "nome": "Frete/Transporte/Guinchos", "id": 5 },
-  { "nome": "Motoboys/Entregas", "id": 19 },
-  { "nome": "Moda", "id": 15 },
-  { "nome": "Materiais de construção", "id": 17 },
   { "nome": "Farmácias", "id": 3 },
-  { "nome": "Mídia, Marketing e Publicidade", "id": 18 },
-  { "nome": "Saúde/Bem-estar/Esportes", "id": 16 },
-  { "nome": "Salão de beleza/Barbearia", "id": 7 },
+  { "nome": "Restaurantes/Bares/Lanchonetes", "id": 4 },
+  { "nome": "Frete/Transporte/Guinchos", "id": 5 },
   { "nome": "Eletricistas/Encanadores", "id": 6 },
+  { "nome": "Salão de beleza/Barbearia", "id": 7 },
   { "nome": "Costureiras/Alfaiates", "id": 8 },
   { "nome": "Limpeza", "id": 9 },
   { "nome": "Jardinagem", "id": 10 },
@@ -22,6 +17,12 @@ const categorias = [
   { "nome": "Pintores", "id": 12 },
   { "nome": "Em busca de emprego", "id": 13 },
   { "nome": "Vagas de emprego", "id": 14 },
+  { "nome": "Moda", "id": 15 },
+  { "nome": "Saúde/Bem-estar/Esportes", "id": 16 },
+  { "nome": "Materiais de construção", "id": 17 },
+  { "nome": "Mídia, Marketing e Publicidade", "id": 18 },
+  { "nome": "Motoboys/Entregas", "id": 19 },
+  { "nome": "Oficinas Mecânicas/Autopeças", "id": 20 },
   { "nome": "Outros", "id": 25 }
 ];
 
