@@ -50,6 +50,34 @@
         </nav>
         <main class="main-content">
             <h1 id="main-title">Bem-vindo ao Portal Democrata</h1>
+            
+            <!-- Campo de pesquisa inteligente -->
+            <div class="search-container" style="margin-bottom: 20px;">
+                <div class="input-group">
+                    <span class="input-group-text" style="background-color: #fcb900; border-color: #fcb900;">
+                        🔍
+                    </span>
+                    <input 
+                        type="text" 
+                        id="search-input" 
+                        class="form-control" 
+                        placeholder="Pesquisar por nome, categoria, descrição ou contato..."
+                        style="border-color: #fcb900;"
+                    >
+                    <button 
+                        class="btn btn-outline-secondary" 
+                        type="button" 
+                        id="clear-search"
+                        style="border-color: #fcb900; color: #fcb900; display: none;"
+                    >
+                        ✕
+                    </button>
+                </div>
+                <small class="text-muted mt-1 d-block">
+                    Digite para buscar em todos os campos dos anúncios
+                </small>
+            </div>
+            
             <!-- Formulário de anúncio removido, agora em arquivo separado -->
             <div id="cards-container">
                 <!-- Cartões serão inseridos aqui pelo JS -->

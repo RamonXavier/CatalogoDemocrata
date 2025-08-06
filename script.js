@@ -6,6 +6,11 @@ let todosItens = [];
 let carregando = false;
 let erroCarregamento = null;
 
+// Variáveis para controle da pesquisa
+let termoPesquisa = '';
+let categoriaAtual = null;
+let itensFiltrados = [];
+
 async function carregarAnuncios() {
   carregando = true;
   erroCarregamento = null;
@@ -82,6 +87,9 @@ function atualizarTela() {
   if (document.getElementById('category-list')) {
     montarMenuCategorias();
   }
+  
+  // Inicializa a funcionalidade de pesquisa
+  inicializarPesquisa();
   
   // Só tenta selecionar categoria se as categorias foram carregadas, os elementos existem e os itens foram carregados
   if (categorias.length > 0 && mainTitle && cardsContainer && todosItens && todosItens.length !== undefined) {
@@ -212,15 +220,15 @@ function selecionarCategoria(categoria) {
     return;
   }
   
-  mainTitle.textContent = categoria.nome;
+  // Atualiza a categoria atual
+  categoriaAtual = categoria;
+  
   document.querySelectorAll('#category-list button').forEach(btn => {
     btn.classList.toggle('active', btn.getAttribute('data-id') == categoria.id);
   });
   
-  // Se categoria "Todos" (id: 0), mostra todos os anúncios
-  // Caso contrário, filtra por categoria específica
-  const itens = categoria.id === 0 ? todosItens : todosItens.filter(item => item.categoria == categoria.id);
-  mostrarCartoes(itens);
+  // Executa a pesquisa para atualizar a exibição
+  executarPesquisa();
 }
 
 function mostrarCartoes(itens) {
@@ -326,6 +334,113 @@ function mostrarToast(msg) {
     if (body) body.textContent = msg || 'Telefone copiado!';
     const toast = new bootstrap.Toast(toastEl);
     toast.show();
+  }
+}
+
+// === FUNÇÕES DE PESQUISA INTELIGENTE ===
+
+function inicializarPesquisa() {
+  const searchInput = document.getElementById('search-input');
+  const clearSearchBtn = document.getElementById('clear-search');
+  
+  if (searchInput) {
+    searchInput.addEventListener('input', function(e) {
+      termoPesquisa = e.target.value.trim().toLowerCase();
+      const clearBtn = document.getElementById('clear-search');
+      
+      // Mostra/esconde botão de limpar
+      if (clearBtn) {
+        clearBtn.style.display = termoPesquisa ? 'block' : 'none';
+      }
+      
+      // Executa a pesquisa
+      executarPesquisa();
+    });
+  }
+  
+  if (clearSearchBtn) {
+    clearSearchBtn.addEventListener('click', function() {
+      const searchInput = document.getElementById('search-input');
+      if (searchInput) {
+        searchInput.value = '';
+        termoPesquisa = '';
+        this.style.display = 'none';
+        executarPesquisa();
+      }
+    });
+  }
+}
+
+function executarPesquisa() {
+  if (!todosItens || todosItens.length === 0) return;
+  
+  // Se não há termo de pesquisa, mostra todos os itens da categoria atual
+  if (!termoPesquisa) {
+    if (categoriaAtual) {
+      itensFiltrados = categoriaAtual.id === 0 ? 
+        todosItens : 
+        todosItens.filter(item => item.categoria == categoriaAtual.id);
+    } else {
+      itensFiltrados = todosItens;
+    }
+  } else {
+    // Filtra por termo de pesquisa em todos os campos relevantes
+    itensFiltrados = todosItens.filter(item => {
+      // Busca no nome
+      if (item.nome && item.nome.toLowerCase().includes(termoPesquisa)) {
+        return true;
+      }
+      
+      // Busca na descrição
+      if (item.Descricao && item.Descricao.toLowerCase().includes(termoPesquisa)) {
+        return true;
+      }
+      
+      // Busca no contato
+      if (item.Contato && item.Contato.toLowerCase().includes(termoPesquisa)) {
+        return true;
+      }
+      
+      // Busca na categoria (nome da categoria)
+      if (categoriaAtual && categoriaAtual.nome && categoriaAtual.nome.toLowerCase().includes(termoPesquisa)) {
+        return true;
+      }
+      
+      // Busca por ID da categoria (se o usuário digitar o número)
+      if (item.categoria && termoPesquisa.match(/^\d+$/) && item.categoria.toString() === termoPesquisa) {
+        return true;
+      }
+      
+      return false;
+    });
+    
+    // Se há categoria selecionada, filtra também por ela
+    if (categoriaAtual && categoriaAtual.id !== 0) {
+      itensFiltrados = itensFiltrados.filter(item => item.categoria == categoriaAtual.id);
+    }
+  }
+  
+  // Atualiza a exibição
+  mostrarCartoes(itensFiltrados);
+  
+  // Atualiza o título para mostrar resultados da pesquisa
+  atualizarTituloPesquisa();
+}
+
+function atualizarTituloPesquisa() {
+  const mainTitle = document.getElementById('main-title');
+  if (!mainTitle) return;
+  
+  if (termoPesquisa) {
+    const totalResultados = itensFiltrados.length;
+    const textoCategoria = categoriaAtual && categoriaAtual.id !== 0 ? 
+      ` em "${categoriaAtual.nome}"` : '';
+    
+    mainTitle.textContent = `Pesquisa: "${termoPesquisa}" (${totalResultados} resultado${totalResultados !== 1 ? 's' : ''}${textoCategoria})`;
+  } else if (categoriaAtual) {
+    mainTitle.textContent = categoriaAtual.nome;
+  } else {
+    mainTitle.textContent = 'Bem-vindo ao Portal Democrata';
   }
 }
 
