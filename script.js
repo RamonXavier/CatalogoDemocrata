@@ -1,32 +1,7 @@
 //npx serve
 
-// Dados diretamente no script.js para funcionar sem servidor
-const categorias = [
-  { "nome": "Todos", "id": 0 }, // Categoria especial para mostrar todos os anúncios
-  { "nome": "Mercados", "id": 1 },
-  { "nome": "Padarias/Confeitarias", "id": 2 },
-  { "nome": "Farmácias", "id": 3 },
-  { "nome": "Restaurantes/Bares/Lanchonetes", "id": 4 },
-  { "nome": "Frete/Transporte/Guinchos", "id": 5 },
-  { "nome": "Eletricistas/Encanadores", "id": 6 },
-  { "nome": "Salão de beleza/Barbearia", "id": 7 },
-  { "nome": "Costureiras/Alfaiates", "id": 8 },
-  { "nome": "Limpeza", "id": 9 },
-  { "nome": "Jardinagem", "id": 10 },
-  { "nome": "Eletrônicos", "id": 11 },
-  { "nome": "Pintores", "id": 12 },
-  { "nome": "Em busca de emprego", "id": 13 },
-  { "nome": "Vagas de emprego", "id": 14 },
-  { "nome": "Moda", "id": 15 },
-  { "nome": "Saúde/Bem-estar/Esportes", "id": 16 },
-  { "nome": "Materiais de construção", "id": 17 },
-  { "nome": "Mídia, Marketing e Publicidade", "id": 18 },
-  { "nome": "Motoboys/Entregas", "id": 19 },
-  { "nome": "Oficinas Mecânicas/Autopeças", "id": 20 },
-  { "nome": "Clinica Veterinária/Petshop/Loja de animais", "id": 21 },
-  { "nome": "Outros", "id": 25 }
-];
-
+// Variável global para armazenar as categorias carregadas da API
+let categorias = [];
 let todosItens = [];
 let carregando = false;
 let erroCarregamento = null;
@@ -40,7 +15,9 @@ async function carregarAnuncios() {
     const resp = await fetch('https://api-portal-democrata-jf.runasp.net/api/anuncio/googlesheets');
     if (!resp.ok) throw new Error('Erro ao buscar anúncios');
     const data = await resp.json();
-    todosItens = data.map(item => ({
+    
+    // Processa os anúncios
+    todosItens = data.anuncios.map(item => ({
       id: item.id,
       nome: item.nome,
       categoria: Number(item.categoria),
@@ -50,8 +27,16 @@ async function carregarAnuncios() {
       Instagram: item.instagram,
       Facebook: item.facebook,
       imagens: [item.imagem1, item.imagem2, item.imagem3].filter(Boolean),
-      logo: item.logo // garantir que a propriedade logo está presente
+      logo: item.logo
     }));
+    
+    // Processa as categorias da API e adiciona a categoria "Todos"
+    const categoriasDaAPI = data.categorias || [];
+    categorias = [
+      { "nome": "Todos", "id": 0 }, // Categoria especial para mostrar todos os anúncios
+      ...categoriasDaAPI
+    ];
+    
   } catch (err) {
     erroCarregamento = err.message;
   } finally {
@@ -75,7 +60,9 @@ function esconderLoading() {
 }
 function mostrarErro() {
   esconderLoading(); // Esconde o loading overlay
-  cardsContainer.innerHTML = `<div class="erro" style="color:red; font-size:1.2em; text-align: center; padding: 20px;">${erroCarregamento}</div>`;
+  if (cardsContainer) {
+    cardsContainer.innerHTML = `<div class="erro" style="color:red; font-size:1.2em; text-align: center; padding: 20px;">${erroCarregamento}</div>`;
+  }
 }
 
 function atualizarTela() {
@@ -96,11 +83,14 @@ function atualizarTela() {
     montarMenuCategorias();
   }
   
-  if (window.location.hash) {
-    selecionarCategoriaPorHash();
-  } else if (categorias.length > 0) {
-    // Por padrão, seleciona a categoria "Todos" (primeira da lista)
-    selecionarCategoria(categorias[0]);
+  // Só tenta selecionar categoria se as categorias foram carregadas, os elementos existem e os itens foram carregados
+  if (categorias.length > 0 && mainTitle && cardsContainer && todosItens && todosItens.length !== undefined) {
+    if (window.location.hash) {
+      selecionarCategoriaPorHash();
+    } else {
+      // Por padrão, seleciona a categoria "Todos" (primeira da lista)
+      selecionarCategoria(categorias[0]);
+    }
   }
 }
 
@@ -109,6 +99,21 @@ const cardsContainer = document.getElementById('cards-container');
 const mainTitle = document.getElementById('main-title');
 
 function montarMenuCategorias() {
+  // Verifica se as categorias foram carregadas
+  if (categorias.length === 0) {
+    return;
+  }
+  
+  // Verifica se o elemento categoryList existe
+  if (!categoryList) {
+    return;
+  }
+  
+  // Verifica se todos os itens foram carregados
+  if (!todosItens || todosItens.length === undefined) {
+    return;
+  }
+  
   categoryList.innerHTML = '';
   
   // Calcula a quantidade de itens por categoria
@@ -161,6 +166,11 @@ function montarMenuCategorias() {
 }
 
 function selecionarCategoriaComRota(categoria) {
+  // Verifica se as categorias foram carregadas
+  if (categorias.length === 0) {
+    return;
+  }
+  
   // Atualiza o hash da URL para a categoria
   const nomeUrl = categoria.nome.toLowerCase().replace(/\s|\(\w+\)/g, '').normalize('NFD').replace(/[^\w]/g, '');
   window.location.hash = `/${nomeUrl}`;
@@ -174,6 +184,11 @@ function selecionarCategoriaComRota(categoria) {
 }
 
 function selecionarCategoriaPorHash() {
+  // Verifica se as categorias foram carregadas
+  if (categorias.length === 0) {
+    return;
+  }
+  
   const hash = window.location.hash;
   if (!hash.startsWith('#/')) return;
   const nomeUrl = hash.slice(2).toLowerCase();
@@ -182,6 +197,21 @@ function selecionarCategoriaPorHash() {
 }
 
 function selecionarCategoria(categoria) {
+  // Verifica se as categorias foram carregadas
+  if (categorias.length === 0) {
+    return;
+  }
+  
+  // Verifica se os elementos necessários existem
+  if (!mainTitle || !cardsContainer) {
+    return;
+  }
+  
+  // Verifica se todos os itens foram carregados
+  if (!todosItens || todosItens.length === undefined) {
+    return;
+  }
+  
   mainTitle.textContent = categoria.nome;
   document.querySelectorAll('#category-list button').forEach(btn => {
     btn.classList.toggle('active', btn.getAttribute('data-id') == categoria.id);
@@ -194,6 +224,23 @@ function selecionarCategoria(categoria) {
 }
 
 function mostrarCartoes(itens) {
+  // Verifica se o elemento cardsContainer existe
+  if (!cardsContainer) {
+    return;
+  }
+  
+  // Verifica se os itens foram carregados
+  if (!itens || itens.length === undefined) {
+    cardsContainer.innerHTML = '<p style="font-size:1.2em;">Carregando...</p>';
+    return;
+  }
+  
+  // Verifica se todos os itens foram carregados
+  if (!todosItens || todosItens.length === undefined) {
+    cardsContainer.innerHTML = '<p style="font-size:1.2em;">Carregando...</p>';
+    return;
+  }
+  
   cardsContainer.innerHTML = '';
   if (itens.length === 0) {
     cardsContainer.innerHTML = '<p style="font-size:1.2em;">Nenhum item encontrado nesta categoria.</p>';
@@ -367,11 +414,27 @@ document.addEventListener('DOMContentLoaded', () => {
   // Preenche o select de categorias no form de anúncio, se existir
   const categoriaSelect = document.getElementById('categoria-select');
   if (categoriaSelect) {
-    // Filtra a categoria "Todos" (id: 0) do formulário, pois é apenas para visualização
-    const categoriasParaForm = categorias.filter(cat => cat.id !== 0);
-    // Mantém o placeholder e adiciona as opções de categoria
-    const optionsHtml = categoriasParaForm.map(cat => `<option value="${cat.id}">${cat.nome}</option>`).join('');
-    categoriaSelect.innerHTML = `<option value="" disabled selected>👆 Selecione a categoria do seu anúncio</option>${optionsHtml}`;
+    // Função para preencher o select de categorias
+    const preencherSelectCategorias = () => {
+      // Filtra a categoria "Todos" (id: 0) do formulário, pois é apenas para visualização
+      const categoriasParaForm = categorias.filter(cat => cat.id !== 0);
+      // Mantém o placeholder e adiciona as opções de categoria
+      const optionsHtml = categoriasParaForm.map(cat => `<option value="${cat.id}">${cat.nome}</option>`).join('');
+      categoriaSelect.innerHTML = `<option value="" disabled selected>👆 Selecione a categoria do seu anúncio</option>${optionsHtml}`;
+    };
+    
+    // Se as categorias já foram carregadas, preenche imediatamente
+    if (categorias.length > 0) {
+      preencherSelectCategorias();
+    } else {
+      // Se não foram carregadas ainda, aguarda o carregamento
+      const checkCategorias = setInterval(() => {
+        if (categorias.length > 0) {
+          preencherSelectCategorias();
+          clearInterval(checkCategorias);
+        }
+      }, 100);
+    }
   }
   
   // Máscara para telefone (Contato)
