@@ -11,12 +11,60 @@ let termoPesquisa = '';
 let categoriaAtual = null;
 let itensFiltrados = [];
 
+// Função para carregar categorias do localStorage ou da API
+async function carregarCategorias() {
+  // Tenta obter categorias do localStorage
+  const categoriasCache = localStorage.getItem('categorias');
+  const timestampCache = localStorage.getItem('categorias_timestamp');
+  const CACHE_DURATION = 1000 * 60 * 30; // 30 minutos em milissegundos
+
+  // Verifica se o cache é válido
+  if (categoriasCache && timestampCache) {
+    const agora = new Date().getTime();
+    if (agora - Number(timestampCache) < CACHE_DURATION) {
+      categorias = JSON.parse(categoriasCache);
+      return categorias;
+    }
+  }
+
+  // Se não tem cache ou está expirado, carrega da API
+  try {
+    const resp = await fetch('https://api-portal-democrata-jf.runasp.net/api/anuncio/googlesheets');
+    if (!resp.ok) throw new Error('Erro ao buscar categorias');
+    const data = await resp.json();
+    
+    const categoriasDaAPI = data.categorias || [];
+    const novasCategorias = [
+      { "nome": "Todos", "id": 0 },
+      ...categoriasDaAPI
+    ];
+
+    // Atualiza o cache
+    localStorage.setItem('categorias', JSON.stringify(novasCategorias));
+    localStorage.setItem('categorias_timestamp', new Date().getTime().toString());
+
+    categorias = novasCategorias;
+    return categorias;
+  } catch (error) {
+    console.error('Erro ao carregar categorias:', error);
+    // Se falhar e tiver cache antigo, usa ele
+    if (categoriasCache) {
+      categorias = JSON.parse(categoriasCache);
+      return categorias;
+    }
+    throw error;
+  }
+}
+
 async function carregarAnuncios() {
   carregando = true;
   erroCarregamento = null;
   mostrarLoading();
 
   try {
+    // Primeiro carrega as categorias
+    await carregarCategorias();
+
     const resp = await fetch('https://api-portal-democrata-jf.runasp.net/api/anuncio/googlesheets');
     if (!resp.ok) throw new Error('Erro ao buscar anúncios');
     const data = await resp.json();
@@ -34,13 +82,6 @@ async function carregarAnuncios() {
       imagens: [item.imagem1, item.imagem2, item.imagem3].filter(Boolean),
       logo: item.logo
     }));
-    
-    // Processa as categorias da API e adiciona a categoria "Todos"
-    const categoriasDaAPI = data.categorias || [];
-    categorias = [
-      { "nome": "Todos", "id": 0 }, // Categoria especial para mostrar todos os anúncios
-      ...categoriasDaAPI
-    ];
     
   } catch (err) {
     erroCarregamento = err.message;
@@ -525,30 +566,27 @@ if (form) {
   });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   // Preenche o select de categorias no form de anúncio, se existir
   const categoriaSelect = document.getElementById('categoria-select');
   if (categoriaSelect) {
-    // Função para preencher o select de categorias
-    const preencherSelectCategorias = () => {
-      // Filtra a categoria "Todos" (id: 0) do formulário, pois é apenas para visualização
-      const categoriasParaForm = categorias.filter(cat => cat.id !== 0);
-      // Mantém o placeholder e adiciona as opções de categoria
-      const optionsHtml = categoriasParaForm.map(cat => `<option value="${cat.id}">${cat.nome}</option>`).join('');
-      categoriaSelect.innerHTML = `<option value="" disabled selected>👆 Selecione a categoria do seu anúncio</option>${optionsHtml}`;
-    };
-    
-    // Se as categorias já foram carregadas, preenche imediatamente
-    if (categorias.length > 0) {
+    try {
+      // Carrega as categorias usando a função centralizada
+      await carregarCategorias();
+      
+      // Função para preencher o select de categorias
+      const preencherSelectCategorias = () => {
+        // Filtra a categoria "Todos" (id: 0) do formulário, pois é apenas para visualização
+        const categoriasParaForm = categorias.filter(cat => cat.id !== 0);
+        // Mantém o placeholder e adiciona as opções de categoria
+        const optionsHtml = categoriasParaForm.map(cat => `<option value="${cat.id}">${cat.nome}</option>`).join('');
+        categoriaSelect.innerHTML = `<option value="" disabled selected>👆 Selecione a categoria do seu anúncio</option>${optionsHtml}`;
+      };
+      
       preencherSelectCategorias();
-    } else {
-      // Se não foram carregadas ainda, aguarda o carregamento
-      const checkCategorias = setInterval(() => {
-        if (categorias.length > 0) {
-          preencherSelectCategorias();
-          clearInterval(checkCategorias);
-        }
-      }, 100);
+    } catch (error) {
+      console.error('Erro ao carregar categorias para o formulário:', error);
+      categoriaSelect.innerHTML = '<option value="" disabled selected>Erro ao carregar categorias</option>';
     }
   }
   
