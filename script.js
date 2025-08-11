@@ -11,23 +11,13 @@ let termoPesquisa = '';
 let categoriaAtual = null;
 let itensFiltrados = [];
 
-// Função para carregar categorias do localStorage ou da API
+// Função para carregar categorias sempre verificando o backend
 async function carregarCategorias() {
-  // Tenta obter categorias do localStorage
+  // Tenta obter hash e categorias do cache para comparação
   const categoriasCache = localStorage.getItem('categorias');
-  const timestampCache = localStorage.getItem('categorias_timestamp');
-  const CACHE_DURATION = 1000 * 60 * 30; // 30 minutos em milissegundos
+  const hashCache = localStorage.getItem('categorias_hash');
 
-  // Verifica se o cache é válido
-  if (categoriasCache && timestampCache) {
-    const agora = new Date().getTime();
-    if (agora - Number(timestampCache) < CACHE_DURATION) {
-      categorias = JSON.parse(categoriasCache);
-      return categorias;
-    }
-  }
-
-  // Se não tem cache ou está expirado, carrega da API
+  // SEMPRE busca do backend para verificar atualizações
   try {
     const resp = await fetch('https://api-portal-democrata-jf.runasp.net/api/anuncio/googlesheets');
     if (!resp.ok) throw new Error('Erro ao buscar categorias');
@@ -39,9 +29,28 @@ async function carregarCategorias() {
       ...categoriasDaAPI
     ];
 
-    // Atualiza o cache
+    // Gera hash das categorias para detectar mudanças
+    const novoHash = JSON.stringify(categoriasDaAPI.map(c => ({ id: c.id, nome: c.nome }))).length.toString();
+    
+    // Verifica se as categorias mudaram comparando com o hash anterior
+    const categoriasAlteraram = hashCache && hashCache !== novoHash;
+    
+    // Atualiza o cache sempre
     localStorage.setItem('categorias', JSON.stringify(novasCategorias));
     localStorage.setItem('categorias_timestamp', new Date().getTime().toString());
+    localStorage.setItem('categorias_hash', novoHash);
+
+    // Se as categorias mudaram, notifica o usuário e atualiza a interface
+    if (categoriasAlteraram) {
+      mostrarToast('🔄 Novas categorias detectadas! Menu atualizado automaticamente.');
+      
+      // Atualiza a interface automaticamente
+      setTimeout(() => {
+        if (document.getElementById('category-list')) {
+          montarMenuCategorias();
+        }
+      }, 100);
+    }
 
     categorias = novasCategorias;
     return categorias;
@@ -55,6 +64,8 @@ async function carregarCategorias() {
     throw error;
   }
 }
+
+
 
 async function carregarAnuncios() {
   carregando = true;
