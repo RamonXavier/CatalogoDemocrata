@@ -142,6 +142,8 @@ function criarCardPet(pet) {
     
     carouselHtml += '</div>';
     
+    const collapseId = `pet-collapse-${pet.id}-${Date.now()}`;
+    
     return `
         <div class="pet-card" data-pet-id="${pet.id}">
             ${carouselHtml}
@@ -149,39 +151,46 @@ function criarCardPet(pet) {
                 <div class="pet-name">${pet.nomepet || 'Nome não informado'}</div>
                 <div class="pet-description">${pet.descricao || 'Descrição não informada'}</div>
                 
-                <div class="pet-owner">
-                    <strong>Dono:</strong> ${pet.nomedono1 || 'Nome não informado'}
-                    ${pet.nomedono2 ? `<br><strong>Dono 2:</strong> ${pet.nomedono2}` : ''}
-                </div>
+                <button class="pet-collapse-toggle" onclick="togglePetCollapse('${collapseId}')">
+                    <span>Ver mais informações</span>
+                    <span class="arrow">▼</span>
+                </button>
                 
-                <div class="pet-contacts">
-                    ${contato1 ? `
-                        <a href="tel:${contato1.replace(/[^\d]/g, '')}" class="btn-contact btn-phone">
-                            📞 Ligar
+                <div class="pet-collapse-content" id="${collapseId}">
+                    <div class="pet-owner">
+                        <strong>Dono:</strong> ${pet.nomedono1 || 'Nome não informado'}
+                        ${pet.nomedono2 ? `<br><strong>Dono 2:</strong> ${pet.nomedono2}` : ''}
+                    </div>
+                    
+                    <div class="pet-contacts">
+                        ${contato1 ? `
+                            <a href="tel:${contato1.replace(/[^\d]/g, '')}" class="btn-contact btn-phone">
+                                📞 Ligar
+                            </a>
+                            <a href="https://wa.me/55${contato1.replace(/[^\d]/g, '')}" class="btn-contact btn-whatsapp" target="_blank">
+                                💬 WhatsApp
+                            </a>
+                        ` : ''}
+                        ${contato2 ? `
+                            <a href="tel:${contato2.replace(/[^\d]/g, '')}" class="btn-contact btn-phone">
+                                📞 Ligar 2
+                            </a>
+                            <a href="https://wa.me/55${contato2.replace(/[^\d]/g, '')}" class="btn-contact btn-whatsapp" target="_blank">
+                                💬 WhatsApp 2
+                            </a>
+                        ` : ''}
+                    </div>
+                    
+                    <div class="pet-actions">
+                        <a href="https://wa.me/553291375797?text=Olá! Gostaria de editar informações do pet ${pet.nomepet || 'perdido'}. ID: ${pet.id}" 
+                           class="btn-edit" target="_blank">
+                            ✏️ Editar
                         </a>
-                        <a href="https://wa.me/55${contato1.replace(/[^\d]/g, '')}" class="btn-contact btn-whatsapp" target="_blank">
-                            💬 WhatsApp
+                        <a href="https://wa.me/553291375797?text=Olá! Gostaria de excluir o pet ${pet.nomepet || 'perdido'} da lista. ID: ${pet.id}" 
+                           class="btn-delete" target="_blank">
+                            🗑️ Excluir
                         </a>
-                    ` : ''}
-                    ${contato2 ? `
-                        <a href="tel:${contato2.replace(/[^\d]/g, '')}" class="btn-contact btn-phone">
-                            📞 Ligar 2
-                        </a>
-                        <a href="https://wa.me/55${contato2.replace(/[^\d]/g, '')}" class="btn-contact btn-whatsapp" target="_blank">
-                            💬 WhatsApp 2
-                        </a>
-                    ` : ''}
-                </div>
-                
-                <div class="pet-actions">
-                    <a href="https://wa.me/553291375797?text=Olá! Gostaria de editar informações do pet ${pet.nomepet || 'perdido'}. ID: ${pet.id}" 
-                       class="btn-edit" target="_blank">
-                        ✏️ Editar
-                    </a>
-                    <a href="https://wa.me/553291375797?text=Olá! Gostaria de excluir o pet ${pet.nomepet || 'perdido'} da lista. ID: ${pet.id}" 
-                       class="btn-delete" target="_blank">
-                        🗑️ Excluir
-                    </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -239,6 +248,28 @@ function fecharCarrosselModal() {
     if (modal) {
         modal.classList.remove('show');
         document.body.style.overflow = ''; // Restaurar scroll do body
+    }
+}
+
+// Função para alternar o collapse das informações do pet
+function togglePetCollapse(collapseId) {
+    const content = document.getElementById(collapseId);
+    const toggle = content.previousElementSibling;
+    
+    if (!content || !toggle) return;
+    
+    const isExpanded = content.classList.contains('show');
+    
+    if (isExpanded) {
+        // Fechar
+        content.classList.remove('show');
+        toggle.classList.remove('expanded');
+        toggle.querySelector('span:first-child').textContent = 'Ver mais informações';
+    } else {
+        // Abrir
+        content.classList.add('show');
+        toggle.classList.add('expanded');
+        toggle.querySelector('span:first-child').textContent = 'Ocultar informações';
     }
 }
 
