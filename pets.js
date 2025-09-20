@@ -77,7 +77,7 @@ function exibirPets() {
         container.innerHTML = `
             <div class="no-pets">
                 <h3>🐾 Nenhum pet encontrado</h3>
-                <p>Não há pets perdidos cadastrados no momento.</p>
+                <p>Não há pets do bairro cadastrados no momento.</p>
                 <button class="btn-pet btn-novo-pet" onclick="abrirModalNovoPet()">
                     ➕ Cadastrar o primeiro pet
                 </button>
@@ -192,8 +192,8 @@ function adicionarEventosCards() {
 // Função para abrir modal de novo pet
 function abrirModalNovoPet() {
     petEditando = null;
-    document.getElementById('petModalLabel').textContent = 'Cadastrar Pet Perdido';
-    document.getElementById('btnSalvarText').textContent = 'Cadastrar Pet';
+    document.getElementById('petModalLabel').textContent = 'Cadastrar Pet do Bairro';
+    document.getElementById('btnSalvarText').textContent = 'Cadastrar Pet do Bairro';
     document.getElementById('petForm').reset();
     
     const modal = new bootstrap.Modal(document.getElementById('petModal'));
@@ -329,7 +329,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const formData = new FormData(this);
                 await salvarPet(formData);
                 
-                mostrarToast(petEditando ? 'Pet atualizado com sucesso!' : 'Pet cadastrado com sucesso!');
+                mostrarToast(petEditando ? 'Pet atualizado com sucesso!' : 'Pet do bairro cadastrado com sucesso!');
                 
                 // Fechar modal
                 const modal = bootstrap.Modal.getInstance(document.getElementById('petModal'));
