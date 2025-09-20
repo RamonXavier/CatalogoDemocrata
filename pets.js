@@ -115,12 +115,16 @@ function criarCardPet(pet) {
         carouselHtml += `
             <div class="carousel-item ${index === 0 ? 'active' : ''}">
                 <img src="${img}" class="d-block w-100 pet-image" alt="Foto ${index + 1} do ${pet.nomepet}" 
-                     onerror="this.src='assets/img/artes/svg.png'">
+                     onerror="this.src='assets/img/artes/svg.png'"
+                     onclick="abrirCarrosselModal('${carouselId}', ${index})">
             </div>
         `;
     });
     
     carouselHtml += '</div>';
+    
+    // Adicionar texto de dica
+    carouselHtml += '<div class="pet-carousel-hint">clique para expandir</div>';
     
     // Adicionar controles apenas se houver mais de uma imagem
     if (imagens.length > 1) {
@@ -187,6 +191,55 @@ function criarCardPet(pet) {
 // Função para adicionar eventos aos cards
 function adicionarEventosCards() {
     // Eventos já são adicionados via onclick nos botões
+}
+
+// Função para abrir o carrossel modal
+function abrirCarrosselModal(carouselId, startIndex = 0) {
+    const carouselElement = document.getElementById(carouselId);
+    if (!carouselElement) return;
+    
+    const carouselItems = carouselElement.querySelectorAll('.carousel-item');
+    const modalInner = document.getElementById('carousel-modal-inner');
+    const modal = document.getElementById('carousel-modal');
+    
+    if (!modalInner || !modal) return;
+    
+    // Limpar conteúdo anterior
+    modalInner.innerHTML = '';
+    
+    // Adicionar todas as imagens do carrossel ao modal
+    carouselItems.forEach((item, index) => {
+        const img = item.querySelector('img');
+        if (img) {
+            const newItem = document.createElement('div');
+            newItem.className = `carousel-item ${index === startIndex ? 'active' : ''}`;
+            newItem.innerHTML = `<img src="${img.src}" class="d-block w-100" alt="${img.alt}" onerror="this.src='assets/img/artes/svg.png'">`;
+            modalInner.appendChild(newItem);
+        }
+    });
+    
+    // Mostrar o modal
+    modal.classList.add('show');
+    document.body.style.overflow = 'hidden'; // Prevenir scroll do body
+    
+    // Inicializar o carrossel do modal
+    const modalCarousel = new bootstrap.Carousel(document.getElementById('carousel-modal-carousel'), {
+        interval: false // Desabilitar auto-play
+    });
+    
+    // Ir para o slide inicial
+    if (startIndex > 0) {
+        modalCarousel.to(startIndex);
+    }
+}
+
+// Função para fechar o carrossel modal
+function fecharCarrosselModal() {
+    const modal = document.getElementById('carousel-modal');
+    if (modal) {
+        modal.classList.remove('show');
+        document.body.style.overflow = ''; // Restaurar scroll do body
+    }
 }
 
 // Função para abrir modal de novo pet
@@ -360,6 +413,24 @@ document.addEventListener('DOMContentLoaded', function() {
         petModal.addEventListener('hidden.bs.modal', function() {
             document.getElementById('petForm').reset();
             petEditando = null;
+        });
+    }
+    
+    // Adicionar eventos para fechar o carrossel modal
+    const carouselModal = document.getElementById('carousel-modal');
+    if (carouselModal) {
+        // Fechar ao clicar fora do conteúdo
+        carouselModal.addEventListener('click', function(e) {
+            if (e.target === carouselModal) {
+                fecharCarrosselModal();
+            }
+        });
+        
+        // Fechar ao pressionar ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && carouselModal.classList.contains('show')) {
+                fecharCarrosselModal();
+            }
         });
     }
 });
