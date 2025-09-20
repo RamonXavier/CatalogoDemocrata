@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pets Perdidos - Portal Democrata</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        .pets-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .pets-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #fcb900, #ffb300);
+            border-radius: 12px;
+            color: #222;
+        }
+        
+        .pets-header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: bold;
+        }
+        
+        .pets-header p {
+            margin: 10px 0 0 0;
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .pets-actions {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .btn-pet {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1em;
+        }
+        
+        .btn-novo-pet {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-novo-pet:hover {
+            background: #218838;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .btn-voltar {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-voltar:hover {
+            background: #5a6268;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .pets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+        
+        .pet-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .pet-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .pet-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: #f8f9fa;
+        }
+        
+        /* Carrossel de imagens dos pets */
+        .pet-carousel {
+            width: 100%;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .pet-carousel .carousel-inner {
+            border-radius: 12px;
+        }
+        
+        .pet-carousel .carousel-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: #f8f9fa;
+        }
+        
+        .pet-carousel .carousel-control-prev,
+        .pet-carousel .carousel-control-next {
+            width: 40px;
+            height: 40px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.5);
+            border-radius: 50%;
+            opacity: 0.8;
+        }
+        
+        .pet-carousel .carousel-control-prev {
+            left: 10px;
+        }
+        
+        .pet-carousel .carousel-control-next {
+            right: 10px;
+        }
+        
+        .pet-carousel .carousel-control-prev:hover,
+        .pet-carousel .carousel-control-next:hover {
+            opacity: 1;
+            background: rgba(0,0,0,0.7);
+        }
+        
+        .pet-carousel .carousel-control-prev-icon,
+        .pet-carousel .carousel-control-next-icon {
+            width: 20px;
+            height: 20px;
+        }
+        
+        .pet-info {
+            padding: 20px;
+        }
+        
+        .pet-name {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #2d3e50;
+            margin-bottom: 10px;
+        }
+        
+        .pet-description {
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        
+        .pet-owner {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+        
+        .pet-owner strong {
+            color: #2d3e50;
+        }
+        
+        .pet-contacts {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .btn-contact {
+            flex: 1;
+            min-width: 120px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            text-align: center;
+            font-size: 0.9em;
+            font-weight: bold;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-whatsapp {
+            background: #25d366;
+            color: white;
+        }
+        
+        .btn-whatsapp:hover {
+            background: #1da851;
+            color: white;
+        }
+        
+        .btn-phone {
+            background: #007bff;
+            color: white;
+        }
+        
+        .btn-phone:hover {
+            background: #0056b3;
+            color: white;
+        }
+        
+        .pet-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+        
+        .btn-edit, .btn-delete {
+            flex: 1;
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: bold;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            text-align: center;
+            display: inline-block;
+        }
+        
+        .btn-edit {
+            background: #ffc107;
+            color: #222;
+        }
+        
+        .btn-edit:hover {
+            background: #e0a800;
+            color: #222;
+            text-decoration: none;
+        }
+        
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .btn-delete:hover {
+            background: #c82333;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .no-pets {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+        
+        .no-pets h3 {
+            margin-bottom: 15px;
+            color: #2d3e50;
+        }
+        
+        .loading-pets {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        
+        .search-pets {
+            margin-bottom: 30px;
+        }
+        
+        .search-pets .form-control {
+            border-radius: 8px;
+            border: 2px solid #fcb900;
+            padding: 12px 16px;
+            font-size: 1.1em;
+        }
+        
+        .search-pets .form-control:focus {
+            box-shadow: 0 0 0 0.2rem rgba(252, 185, 0, 0.25);
+            border-color: #fcb900;
+        }
+        
+        @media (max-width: 768px) {
+            .pets-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .pets-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .pet-contacts {
+                flex-direction: column;
+            }
+            
+            .btn-contact {
+                min-width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading overlay -->
+    <div id="loading-overlay" class="loading-overlay" style="display: none;">
+        <div class="loading-container">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Carregando pets...</div>
+        </div>
+    </div>
+    
+    <div class="pets-container">
+        <!-- Header -->
+        <div class="pets-header">
+            <h1>🐾 Pets Perdidos</h1>
+            <p>Ajude a encontrar os animais perdidos da nossa comunidade</p>
+        </div>
+        
+        <!-- Ações -->
+        <div class="pets-actions">
+            <button class="btn-pet btn-novo-pet" onclick="abrirModalNovoPet()">
+                ➕ Cadastrar Pet Perdido
+            </button>
+            <a href="index.html" class="btn-pet btn-voltar">
+                ← Voltar ao Portal
+            </a>
+        </div>
+        
+        <!-- Campo de pesquisa -->
+        <div class="search-pets">
+            <div class="input-group">
+                <span class="input-group-text" style="background-color: #fcb900; border-color: #fcb900;">
+                    🔍
+                </span>
+                <input 
+                    type="text" 
+                    id="search-pets-input" 
+                    class="form-control" 
+                    placeholder="Pesquisar por nome do pet, dono ou descrição..."
+                >
+                <button 
+                    class="btn btn-outline-secondary" 
+                    type="button" 
+                    id="clear-pets-search"
+                    style="border-color: #fcb900; color: #fcb900; display: none;"
+                >
+                    ✕
+                </button>
+            </div>
+        </div>
+        
+        <!-- Container dos pets -->
+        <div id="pets-container">
+            <div class="loading-pets">
+                <div class="spinner-border text-warning" role="status">
+                    <span class="visually-hidden">Carregando...</span>
+                </div>
+                <p>Carregando pets perdidos...</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal para Novo/Editar Pet -->
+    <div class="modal fade" id="petModal" tabindex="-1" aria-labelledby="petModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="petModalLabel">Cadastrar Pet Perdido</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="petForm" enctype="multipart/form-data">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="NomePet" class="form-label">Nome do Pet *</label>
+                                    <input type="text" class="form-control" id="NomePet" name="NomePet" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="NomeDono1" class="form-label">Nome do Dono *</label>
+                                    <input type="text" class="form-control" id="NomeDono1" name="NomeDono1" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="Descricao" class="form-label">Descrição *</label>
+                            <textarea class="form-control" id="Descricao" name="Descricao" rows="3" 
+                                placeholder="Descreva o pet: raça, cor, tamanho, características especiais, onde foi visto por último..." required></textarea>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="ContatoDono1" class="form-label">Telefone/WhatsApp *</label>
+                                    <input type="text" class="form-control" id="ContatoDono1" name="ContatoDono1" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="ContatoDono2" class="form-label">Telefone Alternativo</label>
+                                    <input type="text" class="form-control" id="ContatoDono2" name="ContatoDono2">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="NomeDono2" class="form-label">Nome do Dono Alternativo</label>
+                            <input type="text" class="form-control" id="NomeDono2" name="NomeDono2">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Fotos do Pet</label>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <input type="file" class="form-control" id="ImgPet1" name="ImgPet1" accept="image/*">
+                                    <small class="text-muted">Foto 1</small>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="file" class="form-control" id="ImgPet2" name="ImgPet2" accept="image/*">
+                                    <small class="text-muted">Foto 2</small>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="file" class="form-control" id="ImgPet3" name="ImgPet3" accept="image/*">
+                                    <small class="text-muted">Foto 3</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-success" id="btnSalvarPet">
+                            <span id="btnSalvarText">Cadastrar Pet</span>
+                            <span id="btnSalvarSpinner" class="spinner-border spinner-border-sm ms-2" style="display: none;"></span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Toast container -->
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999">
+        <div id="toast-pets" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    Operação realizada com sucesso!
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="pets.js"></script>
+</body>
+</html>
