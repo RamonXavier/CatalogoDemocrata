@@ -182,10 +182,9 @@ function criarCardPet(pet) {
                     </div>
                     
                     <div class="pet-actions">
-                        <a href="https://wa.me/553291375797?text=Olá! Gostaria de editar informações do pet ${pet.nomepet || 'perdido'}. ID: ${pet.id}" 
-                           class="btn-edit" target="_blank">
+                        <button class="btn-edit" onclick="editarPet(${pet.id})">
                             ✏️ Editar
-                        </a>
+                        </button>
                         <a href="https://wa.me/553291375797?text=Olá! Gostaria de excluir o pet ${pet.nomepet || 'perdido'} da lista. ID: ${pet.id}" 
                            class="btn-delete" target="_blank">
                             🗑️ Excluir
@@ -280,11 +279,45 @@ function abrirModalNovoPet() {
     document.getElementById('btnSalvarText').textContent = 'Cadastrar Pet do Bairro';
     document.getElementById('petForm').reset();
     
+    // Ocultar aviso de imagens para novo pet
+    const imageWarning = document.getElementById('image-warning');
+    if (imageWarning) {
+        imageWarning.style.display = 'none';
+    }
+    
     const modal = new bootstrap.Modal(document.getElementById('petModal'));
     modal.show();
 }
 
-// Funções de edição e exclusão removidas - agora são feitas via WhatsApp
+// Função para editar pet
+function editarPet(petId) {
+    const pet = todosPets.find(p => p.id === petId);
+    if (!pet) {
+        mostrarToast('Pet não encontrado!', 'error');
+        return;
+    }
+    
+    petEditando = pet;
+    document.getElementById('petModalLabel').textContent = 'Editar Pet do Bairro';
+    document.getElementById('btnSalvarText').textContent = 'Atualizar Pet do Bairro';
+    
+    // Preencher formulário com dados do pet
+    document.getElementById('NomePet').value = pet.nomepet || '';
+    document.getElementById('NomeDono1').value = pet.nomedono1 || '';
+    document.getElementById('NomeDono2').value = pet.nomedono2 || '';
+    document.getElementById('Descricao').value = pet.descricao || '';
+    document.getElementById('ContatoDono1').value = pet.contatodono1 || '';
+    document.getElementById('ContatoDono2').value = pet.contatodono2 || '';
+    
+    // Mostrar aviso de imagens para edição
+    const imageWarning = document.getElementById('image-warning');
+    if (imageWarning) {
+        imageWarning.style.display = 'block';
+    }
+    
+    const modal = new bootstrap.Modal(document.getElementById('petModal'));
+    modal.show();
+}
 
 // Função para salvar pet (criar ou editar)
 async function salvarPet(formData) {
@@ -444,6 +477,12 @@ document.addEventListener('DOMContentLoaded', function() {
         petModal.addEventListener('hidden.bs.modal', function() {
             document.getElementById('petForm').reset();
             petEditando = null;
+            
+            // Ocultar aviso de imagens
+            const imageWarning = document.getElementById('image-warning');
+            if (imageWarning) {
+                imageWarning.style.display = 'none';
+            }
         });
     }
     
